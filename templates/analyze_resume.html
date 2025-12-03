@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-lg border-0 rounded-4 p-5 bg-dark text-white">
+    <h2 class="text-center mb-4 fw-bold text-info">Analyze Resume</h2>
+    <p class="text-center text-muted mb-4">
+      Enter the Job Description and upload the candidate's resume to get a matching score.
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-4">
+        <label class="form-label fw-bold">Job Description</label>
+        <textarea name="job_description" class="form-control bg-secondary text-white border-0" rows="5" placeholder="Enter job requirements, skills, experience..." required></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-bold">Upload Resume</label>
+        <input type="file" name="resume" class="form-control bg-secondary text-white border-0" required>
+        <small class="text-muted">Supported formats: PDF, DOC, DOCX, TXT</small>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-success fw-bold py-2">Analyze Resume</button>
+      </div>
+    </form>
+
+    {% if result %}
+    <div class="mt-4 p-4 rounded-4 bg-info text-dark shadow">
+      <h5 class="fw-bold">Analysis Result</h5>
+      <p>Resume: <b>{{ result.filename }}</b></p>
+      <p>Matching Score: <b>{{ result.score }}/100</b></p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

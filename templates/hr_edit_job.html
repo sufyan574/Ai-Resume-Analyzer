@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Job</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="mb-4">Edit Job – {{ job.title }}</h2>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                <label class="form-label">Job Title</label>
+                {{ form.title(class="form-control", value=job.title) }}
+            </div>
+
+            <!-- Removed company because your JobForm does NOT have company field -->
+
+            <!-- Removed location because your JobForm does NOT have location field -->
+
+            <div class="mb-3">
+                <label class="form-label">Job Description</label>
+                {{ form.description(class="form-control", rows="6", value=job.description) }}
+            </div>
+
+            <!-- Removed skills because your JobForm does NOT have skills field -->
+
+            <!-- Removed experience because your JobForm does NOT have experience field -->
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/hr_dashboard" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

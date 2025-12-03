@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center py-5">
+  <h1 class="display-4 mb-3">AI Resume Analyzer</h1>
+  <p class="lead mb-4">
+    Upload your resume, extract your skills, and get job recommendations instantly.
+  </p>
+  <div>
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg mx-2">Register</a>
+    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg mx-2">Login</a>
+  </div>
+</div>
+{% endblock %}

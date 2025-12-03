@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+
+  <div class="card bg-dark p-5 rounded-4 shadow-lg">
+      <h2 class="text-center fw-bold text-info mb-4">Bulk Resume Upload Results</h2>
+      <p class="text-center text-muted">
+        Below are the analyzed resumes with ATS score, detected skills, and candidate contact details.
+      </p>
+  </div>
+
+  {% if results %}
+  <div class="card bg-dark mt-4 p-4 rounded-4 shadow-lg">
+    <h4 class="text-warning fw-bold mb-3">Processed Candidates</h4>
+
+    <div class="table-responsive">
+      <table class="table table-dark table-hover table-bordered text-center align-middle">
+        <thead class="table-info text-dark">
+          <tr>
+            <th>#</th>
+            <th>Candidate Email</th>
+            <th>Resume Preview</th>
+            <th>Skills Detected</th>
+            <th>ATS Score</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in results %}
+          <tr>
+            <td>{{ loop.index }}</td>
+
+            <!-- Candidate Email -->
+            <td class="fw-semibold text-warning">
+              {{ c.email if c.email else "Not Found" }}
+            </td>
+
+            <!-- Preview -->
+            <td class="text-wrap" style="max-width:300px;">
+              {{ c.preview }}
+            </td>
+
+            <!-- Skills -->
+            <td class="text-wrap" style="max-width:250px;">
+              {{ c.skills|join(', ') }}
+            </td>
+
+            <!-- ATS Score -->
+            <td class="fw-bold">
+              {{ c.score }}%
+            </td>
+
+            <!-- Resume Download -->
+            <td>
+              {% if c.resume_filename %}
+                <a href="{{ url_for('uploaded_file', filename=c.resume_filename) }}" 
+                   class="btn btn-sm btn-outline-info">
+                   Download
+                </a>
+              {% else %}
+                <span class="text-muted">N/A</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+    <div class="alert alert-info text-center mt-4">
+      No results processed yet.
+    </div>
+  {% endif %}
+
+  <div class="mt-4 text-center">
+    <a href="{{ url_for('hr_dashboard') }}" class="btn btn-secondary px-4 py-2">Back to HR Dashboard</a>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-3">Analysis Results</h2>
+
+  <div class="card bg-dark text-white p-3 mb-4">
+    <h5>Job description skills detected:</h5>
+    {% if req_skills %}
+      <small>{{ req_skills | join(', ') }}</small>
+    {% else %}
+      <small class="text-muted">No clear skills detected from description (fallback used).</small>
+    {% endif %}
+    <p class="mt-2"><strong>Threshold:</strong> {{ threshold }}%</p>
+  </div>
+
+  <h4>Shortlisted Candidates ({{ shortlisted|length }})</h4>
+  {% if shortlisted %}
+    <div class="table-responsive">
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th>Candidate Email</th>
+            <th>Phone</th>
+            <th>Filename</th>
+            <th>ATS Score</th>
+            <th>Matched Skills</th>
+            <th>Missing Skills</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in shortlisted %}
+            <tr>
+              <td>{{ s.contact.email or '—' }}</td>
+              <td>{{ s.contact.phone or '—' }}</td>
+              <td>{{ s.filename }}</td>
+              <td>{{ s.score }}%</td>
+              <td><small>{{ s.matched | join(', ') }}</small></td>
+              <td><small>{{ s.missing | join(', ') }}</small></td>
+              <td>
+                <a href="{{ url_for('uploaded_file', filename=s.path) }}" class="btn btn-sm btn-outline-info">Download</a>
+                <a href="{{ url_for('view_resume', resume_id=s.resume_id) }}" class="btn btn-sm btn-outline-light">View</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted">No candidates met the threshold.</p>
+  {% endif %}
+
+  <hr class="my-4">
+
+  <h4>All processed CVs</h4>
+  <div class="table-responsive">
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr>
+          <th>Filename</th><th>Score</th><th>Email</th><th>Phone</th><th>Matched</th><th>Missing</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+          <tr>
+            <td>{{ r.filename }}</td>
+            <td>{{ r.score }}%</td>
+            <td>{{ r.contact.email or '—' }}</td>
+            <td>{{ r.contact.phone or '—' }}</td>
+            <td><small>{{ r.matched | join(', ') }}</small></td>
+            <td><small>{{ r.missing | join(', ') }}</small></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4">
+    <a href="{{ url_for('hr_dashboard') }}" class="btn btn-outline-light">Back</a>
+  </div>
+</div>
+{% endblock %}

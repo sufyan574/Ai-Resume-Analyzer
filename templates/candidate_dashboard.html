@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(135deg, #0d1117, #161b22);
+  }
+  .card {
+    transition: all 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 6px 16px rgba(0, 255, 255, 0.2);
+  }
+  .table-dark th, .table-dark td {
+    vertical-align: middle;
+  }
+</style>
+
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold text-info display-5">Candidate Dashboard</h1>
+    <p class="fst-italic text-light fs-5">
+      “Your resume is not just a document — it’s your story waiting to be discovered.”
+    </p>
+    <p class="text-muted">
+      Upload your resume for ATS analysis or apply directly using a Job ID.
+    </p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- 🚀 Upload Resume (General ATS) -->
+    <div class="col-md-6">
+      <div class="card bg-dark border-0 shadow-lg rounded-4 p-4 h-100">
+        <h4 class="text-warning fw-bold mb-3 text-center">🚀 Upload Resume (General ATS)</h4>
+        <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.file(class="form-control bg-secondary text-white border-0 p-3 rounded-3") }}
+          </div>
+          <button type="submit" class="btn btn-info w-100 py-2 fw-semibold rounded-3">
+            Analyze Resume
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 🎯 Apply via Job ID -->
+    <div class="col-md-6">
+      <div class="card bg-dark border-0 shadow-lg rounded-4 p-4 h-100">
+        <h4 class="text-success fw-bold mb-3 text-center">🎯 Apply via Job ID</h4>
+        <form method="POST" action="{{ url_for('apply_job') }}" enctype="multipart/form-data">
+          <div class="mb-3">
+            <input
+              type="text"
+              name="job_id"
+              class="form-control bg-secondary text-white border-0 p-3 rounded-3"
+              placeholder="Enter Job ID (e.g. JOB-2025-0012)"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              type="file"
+              name="file"
+              class="form-control bg-secondary text-white border-0 p-3 rounded-3"
+              accept=".pdf,.docx"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-success w-100 py-2 fw-semibold rounded-3">
+            Apply Now
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📄 Uploaded Resumes Table -->
+  <div class="card bg-dark shadow-lg border-0 rounded-4 p-4 mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="text-warning fw-bold mb-0">📄 My Uploaded Resumes</h4>
+      <span class="text-muted fst-italic">Total: {{ resumes|length }}</span>
+    </div>
+
+    {% if resumes %}
+    <div class="table-responsive">
+      <table class="table table-dark table-hover table-bordered align-middle text-center rounded-4 overflow-hidden">
+        <thead class="table-info text-dark">
+          <tr>
+            <th>#</th>
+            <th>Resume Name</th>
+            <th>Uploaded On</th>
+            <th>Detected Skills</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in resumes %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.filename }}</td>
+            <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+            <td class="text-wrap">{{ r.detected_skills.split(',')|join(', ') }}</td>
+            <td>
+              <a href="{{ url_for('uploaded_file', filename=r.filename) }}"
+                 class="btn btn-sm btn-outline-info rounded-pill px-3">
+                 Download
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="text-center text-muted py-4">
+        <p>No resumes uploaded yet. Start your journey now 🚀</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 📄 Applied Jobs Table -->
+  <div class="card bg-dark shadow-lg border-0 rounded-4 p-4 mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="text-success fw-bold mb-0">🎯 Jobs I Applied To</h4>
+      <span class="text-muted fst-italic">Total: {{ applications|length }}</span>
+    </div>
+
+    {% if applications %}
+    <div class="table-responsive">
+      <table class="table table-dark table-hover table-bordered align-middle text-center rounded-4 overflow-hidden">
+        <thead class="table-warning text-dark">
+          <tr>
+            <th>#</th>
+            <th>Job Title</th>
+            <th>Applied On</th>
+            <th>ATS Score</th>
+            <th>Detected Skills</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in applications %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ a.job_post.title }}</td>
+            <td>{{ a.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>
+              {% if a.score %}
+                <span class="badge bg-success">{{ a.score }}%</span>
+              {% else %}
+                <span class="badge bg-secondary">N/A</span>
+              {% endif %}
+            </td>
+            <td class="text-wrap">{{ a.detected_skills.split(',')|join(', ') }}</td>
+            <td>
+              {% if a.shortlisted %}
+                <span class="badge bg-success px-3 py-2">Shortlisted</span>
+              {% else %}
+                <span class="badge bg-danger px-3 py-2">Pending</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="text-center text-muted py-4">
+        <p>You haven’t applied to any jobs yet. 🎯</p>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

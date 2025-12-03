@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Candidates</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="mb-4">Candidates for Job: {{ job.title }}</h2>
+
+        {% if applications|length == 0 %}
+            <div class="alert alert-warning">No candidates applied yet.</div>
+        {% else %}
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Candidate Name</th>
+                    <th>Email</th>
+                    <th>ATS Score</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td>{{ app.candidate }}</td>
+                        <td>{{ app.email }}</td>
+                        <td><strong>{{ app.score }}%</strong></td>
+
+                        <td>
+                            {% if app.filename %}
+                                <a href="{{ url_for('uploaded_file', filename=app.filename) }}"
+                                   class="btn btn-sm btn-primary">
+                                    Download
+                                </a>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if app.score >= 60 %}
+                                <span class="badge bg-success">Shortlisted</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        {% endif %}
+
+        <a href="{{ url_for('hr_dashboard') }}" class="btn btn-secondary mt-3">Back</a>
+
+    </div>
+</div>
+</body>
+</html>
