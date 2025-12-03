@@ -1,0 +1,12 @@
+body {
+  background: linear-gradient(135deg, #222, #444);
+  color: white;
+}
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+.btn-outline-light:hover {
+  background-color: #007bff;
+  color: white;
+}
