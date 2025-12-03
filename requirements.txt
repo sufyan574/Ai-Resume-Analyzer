@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Login
+Flask-Mail
+itsdangerous
+python-docx
+PyPDF2
+spacy
+pandas
+werkzeug
